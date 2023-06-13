@@ -129,13 +129,20 @@ class Load extends Phaser.Scene{
         this.load.image('exitW','exitWhite.png');
         this.load.image('musicOn','musicOn.png');
         this.load.image('musicOff','musicOff.png');
-        this.load.audio('music','Succession (Main Title Theme) - Nicholas Britell  Succession (HBO Original Series Soundtrack).mp3');
+        this.load.audio('BGMusic','Succession (Main Title Theme) - Nicholas Britell  Succession (HBO Original Series Soundtrack).mp3');
         for (var i = 0; i < 5000; i++) {
             this.load.image('jumps'+i, 'StudioName.png');
         }
     }
 
     create() {
+
+        this.BGMusic = this.sound.add('BGMusic');
+        this.BGMusic.play({
+            loop:true
+        });
+
+
 
         let audioImageOn = true;
         let audioImageOff = false; 
@@ -249,6 +256,7 @@ class Load extends Phaser.Scene{
 
        musicOn.setInteractive()
        musicOn.on('pointerdown', () => {
+            this.BGMusic.pause();
             musicOn.setVisible(false);
             audioImageOn = false;
             musicOff.setVisible(true);
@@ -267,6 +275,7 @@ class Load extends Phaser.Scene{
 
        musicOff.setInteractive()
        musicOff.on('pointerdown', () => {
+        this.BGMusic.resume();
         musicOn.setVisible(true);
         audioImageOn = true;
         musicOff.setVisible(false);
