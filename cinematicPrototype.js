@@ -42,7 +42,8 @@ class Intro extends Phaser.Scene {
 
         });    
         this.cat.play('cat sleeping');       
-        this.input.on('pointerdown', () => this.scene.start('load'));
+        this.cat.setInteractive();
+        this.cat.on('pointerdown', () => this.scene.start('load'));
     }
 }
 
@@ -50,7 +51,7 @@ class Load extends Phaser.Scene{
     constructor(){
         super('load');
     }
-    cursors;
+    
     player;
     preload() {
 
@@ -115,13 +116,20 @@ class Load extends Phaser.Scene{
         });
 
         this.load.path = './assets/'
-        this.load.image('chess','chessBoard.png');
+        this.load.image('firstBG','titlePageBlackWhite.png');
+        this.load.image('secondBG','titlePageWhiteBlack.png');
         this.load.image('jumps','StudioName.png');
-        this.load.image('queen','Idle_South_0.png');
-        this.load.spritesheet('runLeft','Run_West_StripSheet.png',{ frameWidth: 24, frameHeight: 32}); 
-        this.load.spritesheet('runRight','Run_East_StripSheet.png',{ frameWidth: 24, frameHeight: 32}); 
-        this.load.spritesheet('idle','Idle_South_0.png',{ frameWidth: 24, frameHeight: 32}); 
-        this.load.spritesheet('dude', 'dude.png', { frameWidth: 32, frameHeight: 48 });
+        this.load.image('playB','playBlack.png');
+        this.load.image('playW','playWhite.png');
+        this.load.image('settingsW','settingsWhite.png')
+        this.load.image('settingsB','settingsBlack.png');
+        this.load.image('creditsB','creditBlack.png');
+        this.load.image('creditsW','creditsWhite.png');
+        this.load.image('exitB','exitBlack.png');
+        this.load.image('exitW','exitWhite.png');
+        this.load.image('musicOn','musicOn.png');
+        this.load.image('musicOff','musicOff.png');
+        this.load.audio('music','Succession (Main Title Theme) - Nicholas Britell  Succession (HBO Original Series Soundtrack).mp3');
         for (var i = 0; i < 5000; i++) {
             this.load.image('jumps'+i, 'StudioName.png');
         }
@@ -129,40 +137,155 @@ class Load extends Phaser.Scene{
 
     create() {
 
-        var queen = this.add.image(1000,500,'queen')
-        queen.setScale(10);
+        let audioImageOn = true;
+        let audioImageOff = false; 
 
-        var board = this.add.image(900,600,'chess');
-        board.setScale(0.7);
+        var titleBGV1 = this.add.image(960,540,'firstBG');
+        titleBGV1.setDepth(0);
+        titleBGV1.setScale(1920/titleBGV1.width,1080/titleBGV1.height);
 
-        this.graphics = this.add.graphics();
+        
+        var titleBGV2 = this.add.image(960,540,'secondBG');
+        titleBGV2.setVisible(false);
+        titleBGV2.setScale(1920/titleBGV2.width,1080/titleBGV2.height);
 
-        var playButton = this.add.graphics();
-        var settingsButton = this.add.graphics();
-        var creditsButton = this.add.graphics();
-        var exitButton = this.add.graphics();
+       // const layerBG = this.add.layer();
 
-        playButton.fillStyle(0xffffff, 1);
-        settingsButton.fillStyle(0xffffff, 1);
-        creditsButton.fillStyle(0xffffff, 1);
-        exitButton.fillStyle(0xffffff, 1);
+        //layerBG.add([titleBGV1,titleBGV2]);
+        //layerBG.setDepth(0);
+        this.settingsBox = this.add.graphics();
+        this.settingsBox.setVisible(false);
+        this.settingsBox.setDepth(101);
+        this.settingsBox.fillStyle(0x000000, 1);
+        this.settingsBox.fillRect(500,200,800,800);
 
-        playButton.fillRect(-400,200,320,50);
-        settingsButton.fillRect(-400,400,320,50);
-        creditsButton.fillRect(-400,600,320,50);
-        exitButton.fillRect(-400,800,320,50);
+        let musicOn = this.add.image(900,550,'musicOn');
+        musicOn.setVisible(false);
+        musicOn.setScale(600/musicOn.width,600/musicOn.height);
+        musicOn.setDepth(101);
+
+        let musicOff = this.add.image(900,550,'musicOff');
+        musicOff.setVisible(false);
+        musicOff.setScale(600/musicOff.width,600/musicOff.height);
+        musicOff.setDepth(101);
+
+        
+        var backSettings = this.add.text(850,900,'BACK',{font:'50px monospace',color: '#FFFFFF'});
+        backSettings.setVisible(false);
+        backSettings.setDepth(101);
+
+        let playBlack = this.add.image(700,700,'playB');
+        playBlack.setVisible(false);
+        playBlack.setScale(200/playBlack.width,200/playBlack.height);
+        playBlack.setDepth(100);
+
+        let settingsBlack = this.add.sprite(1200,700,'settingsB');
+       settingsBlack.setScale(200/settingsBlack.width,200/settingsBlack.height);
+       settingsBlack.setDepth(100);
+       settingsBlack.setInteractive();
+       settingsBlack.on('pointerdown', () => {
+            alert('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
+            this.settingsBox.setVisible(true);
+            backSettings.setVisible(true);
+            if(audioImageOn == true){
+                musicOn.setVisible(true);
+            }
+            else{
+                musicOff.setVisible(true);
+            }
+       });
+
+        var creditsBlack = this.add.image(700,800,'creditsB');
+        creditsBlack.setVisible(false);
+        creditsBlack.setScale(100/creditsBlack.width,100/creditsBlack.height);
+        creditsBlack.setDepth(100);
+
+        let exitBlack = this.add.image(1200,800,'exitB');
+        exitBlack.setVisible(true);
+        exitBlack.setScale(100/exitBlack.width,100/exitBlack.height);
+        exitBlack.setDepth(100);
+
+          
+        let playWhite = this.add.image(700,700,'playW');
+        playWhite.setScale(200/playWhite.width,200/playWhite.height);
+        playWhite.setDepth(100);
+
+        var settingsWhite = this.add.image(1200,700,'settingsW');
+        settingsWhite.setVisible(false);
+        settingsWhite.setScale(200/settingsWhite.width,200/settingsWhite.height);
+
+        let creditsWhite = this.add.image(700,800,'creditsW');
+        //creditsWhite.setVisible(true);
+        creditsWhite.setScale(100/creditsWhite.width,100/creditsWhite.height);
+        creditsWhite.setDepth(100);
+
+        var exitWhite = this.add.image(1200,800,'exitW');
+        exitWhite.setVisible(false);
+        exitWhite.setScale(100/exitWhite.width,100/exitWhite.height);
+        exitWhite.setDepth(100);
+
+        
+
+
+       settingsWhite.setInteractive()
+       settingsWhite.on('pointerdown', () => {
+            this.settingsBox.setVisible(true);
+            backSettings.setVisible(true);
+            if(audioImageOn == true){
+                musicOn.setVisible(true);
+            }
+            else{
+                musicOff.setVisible(true);
+            }
+        });
+
+       backSettings.setInteractive()
+       backSettings.on('pointerdown', () => {
+            this.settingsBox.setVisible(false);
+            backSettings.setVisible(false);
+            musicOn.setVisible(false);
+            musicOff.setVisible(false);
+       });
+
+       musicOn.setInteractive()
+       musicOn.on('pointerdown', () => {
+            musicOn.setVisible(false);
+            audioImageOn = false;
+            musicOff.setVisible(true);
+            audioImageOff = true
+            titleBGV1.setVisible(false);
+            titleBGV2.setVisible(true);
+            settingsBlack.setVisible(false);
+            exitBlack.setVisible(false);
+            playWhite.setVisible(false);
+            creditsWhite.setVisible(false);
+            settingsWhite.setVisible(true);
+            exitWhite.setVisible(true);
+            playBlack.setVisible(true);
+            creditsBlack.setVisible(true);
+       });
+
+       musicOff.setInteractive()
+       musicOff.on('pointerdown', () => {
+        musicOn.setVisible(true);
+        audioImageOn = true;
+        musicOff.setVisible(false);
+        audioImageOff = false;        
+        titleBGV1.setVisible(true);
+        titleBGV2.setVisible(false);
+        settingsBlack.setVisible(true);
+        exitBlack.setVisible(true);
+        playWhite.setVisible(true);
+        creditsWhite.setVisible(true);
+        settingsWhite.setVisible(false);
+        exitWhite.setVisible(false);
+        playBlack.setVisible(false);
+        creditsBlack.setVisible(false);
+       });
 
 
 
-        var play = this.add.text(-200,200,'PLAY',{font:'50px monospace',color: '#000000'});
-        var settings = this.add.text(-200,400,'SETTINGS',{font:'50px monospace', color: '#000000'});
-        var credits = this.add.text(-200,600,'CREDITS',{font:'50px monospace', color: '#000000'});
-        var exit = this.add.text(-200,800,'EXIT',{font:'50px monospace', color: '#000000'});
-        var title = this.add.text(800,100,'LEAP \n QUEEN',{font:'300px monospace',color: '#ffffff'});
-
-
-       
-        this.tweens.chain({
+      /*  this.tweens.chain({
             tweens: [
                 {
                    targets: playButton,
@@ -216,15 +339,39 @@ class Load extends Phaser.Scene{
         });
 
         
+        play.setInteractive()
 
-        
+        play.on('pointerdown', () => {
+            this.gotoScene('play');
+        })
 
 
 
-        this.input.on('pointerdown', () => this.scene.start('intro'));
+        this.input.on('pointerdown', () => this.scene.start('intro'));*/
     }
 
+    
+
 }
+/*
+class Settings extends Phaser.Scene{
+    constructor(){
+        super('load');
+
+
+class Credits extends Phaser.Scene{
+    constructor(){
+        super('load');
+
+        
+class Exit extends Phaser.Scene{
+    constructor(){
+        super('load');
+
+*/
+
+
+
 const game = new Phaser.Game({
     scale: {
         mode: Phaser.Scale.FIT,
