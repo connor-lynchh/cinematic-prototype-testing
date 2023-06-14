@@ -118,6 +118,8 @@ class Load extends Phaser.Scene{
         this.load.path = './assets/'
         this.load.image('firstBG','titlePageBlackWhite.png');
         this.load.image('secondBG','titlePageWhiteBlack.png');
+        this.load.image('backB','backButtonBlack.png');
+        this.load.image('backW','backButtonWhite.png');
         this.load.image('jumps','StudioName.png');
         this.load.image('playB','playBlack.png');
         this.load.image('playW','playWhite.png');
@@ -130,7 +132,7 @@ class Load extends Phaser.Scene{
         this.load.image('musicOn','musicOn.png');
         this.load.image('musicOff','musicOff.png');
         this.load.audio('BGMusic','Succession (Main Title Theme) - Nicholas Britell  Succession (HBO Original Series Soundtrack).mp3');
-        for (var i = 0; i < 5000; i++) {
+        for (var i = 0; i < 500; i++) {
             this.load.image('jumps'+i, 'StudioName.png');
         }
     }
@@ -164,22 +166,33 @@ class Load extends Phaser.Scene{
         this.settingsBox.setVisible(false);
         this.settingsBox.setDepth(101);
         this.settingsBox.fillStyle(0x000000, 1);
-        this.settingsBox.fillRect(500,200,800,800);
+        this.settingsBox.fillRect(475,175,975,750);
 
-        let musicOn = this.add.image(900,550,'musicOn');
+        let musicOn = this.add.image(1000,550,'musicOn');
         musicOn.setVisible(false);
         musicOn.setScale(600/musicOn.width,600/musicOn.height);
-        musicOn.setDepth(101);
+        musicOn.setDepth(103);
 
-        let musicOff = this.add.image(900,550,'musicOff');
+        let musicOff = this.add.image(1000,550,'musicOff');
         musicOff.setVisible(false);
         musicOff.setScale(600/musicOff.width,600/musicOff.height);
-        musicOff.setDepth(101);
+        musicOff.setDepth(103);
 
         
-        var backSettings = this.add.text(850,900,'BACK',{font:'50px monospace',color: '#FFFFFF'});
-        backSettings.setVisible(false);
-        backSettings.setDepth(101);
+        var backSettingsBlack = this.add.image(975,875,'backB');
+        backSettingsBlack.setScale(100/backSettingsBlack.width,100/backSettingsBlack.height);
+        backSettingsBlack.setVisible(false);
+        backSettingsBlack.setDepth(102);
+
+             
+        var MusicOnTxt = this.add.text(900,200,'MUSIC ON',{font:'40px monospace',color: '#FFFFFF'});
+        MusicOnTxt.setVisible(false);
+        MusicOnTxt.setDepth(101);
+
+        var MusicOffTxt = this.add.text(900,200,'MUSIC OFF',{font:'40px monospace',color: '#FFFFFF'});
+        MusicOffTxt.setVisible(false);
+        MusicOffTxt.setDepth(101);
+
 
         let playBlack = this.add.image(700,700,'playB');
         playBlack.setVisible(false);
@@ -193,12 +206,14 @@ class Load extends Phaser.Scene{
        settingsBlack.on('pointerdown', () => {
             alert('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
             this.settingsBox.setVisible(true);
-            backSettings.setVisible(true);
+            backSettingsBlack.setVisible(true);
             if(audioImageOn == true){
                 musicOn.setVisible(true);
+                MusicOnTxt.setVisible(true);
             }
             else{
                 musicOff.setVisible(true);
+                MusicOffTxt.setVisible(true);
             }
        });
 
@@ -237,27 +252,33 @@ class Load extends Phaser.Scene{
        settingsWhite.setInteractive()
        settingsWhite.on('pointerdown', () => {
             this.settingsBox.setVisible(true);
-            backSettings.setVisible(true);
+            backSettingsBlack.setVisible(true);
             if(audioImageOn == true){
                 musicOn.setVisible(true);
+                MusicOnTxt.setVisible(true);
             }
             else{
                 musicOff.setVisible(true);
+                MusicOffTxt.setVisible(true);
             }
         });
 
-       backSettings.setInteractive()
-       backSettings.on('pointerdown', () => {
+       backSettingsBlack.setInteractive()
+       backSettingsBlack.on('pointerdown', () => {
             this.settingsBox.setVisible(false);
-            backSettings.setVisible(false);
+            backSettingsBlack.setVisible(false);
             musicOn.setVisible(false);
             musicOff.setVisible(false);
+            MusicOnTxt.setVisible(false);
+            MusicOffTxt.setVisible(false);
        });
 
        musicOn.setInteractive()
        musicOn.on('pointerdown', () => {
             this.BGMusic.pause();
             musicOn.setVisible(false);
+            MusicOnTxt.setVisible(false);
+            MusicOffTxt.setVisible(true);
             audioImageOn = false;
             musicOff.setVisible(true);
             audioImageOff = true
@@ -277,6 +298,8 @@ class Load extends Phaser.Scene{
        musicOff.on('pointerdown', () => {
         this.BGMusic.resume();
         musicOn.setVisible(true);
+        MusicOnTxt.setVisible(true);
+        MusicOffTxt.setVisible(false);
         audioImageOn = true;
         musicOff.setVisible(false);
         audioImageOff = false;        
