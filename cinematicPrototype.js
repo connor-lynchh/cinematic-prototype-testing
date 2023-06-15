@@ -139,11 +139,14 @@ class Load extends Phaser.Scene{
 
     create() {
 
-        this.BGMusic = this.sound.add('BGMusic');
-        this.BGMusic.play({
-            loop:true
-        });
 
+        musicVolume.BGMusic = this.sound.add('BGMusic');
+        const musicTest = musicVolume.BGMusic;
+        musicTest.stop()
+        musicTest.play({
+            seek: 5,
+            loop: true
+        });
 
 
         let audioImageOn = true;
@@ -167,6 +170,28 @@ class Load extends Phaser.Scene{
         this.settingsBox.setDepth(101);
         this.settingsBox.fillStyle(0x000000, 1);
         this.settingsBox.fillRect(475,175,975,750);
+
+        this.volBar=this.add.rectangle(600,600,80,600, 0x00ffff)
+        this.volBar.setVisible(false);
+        this.volBar.setDepth(103);
+        this.slider=this.add.rectangle(600,600,160,80,0xffff00);
+        this.slider.setDepth(103);
+        this.slider.setVisible(false);
+        
+
+
+        this.slider.setInteractive({draggable: true});
+
+        this.input.on('drag', (pointer,gameObject,dragX,dragY)=> {
+            //  By clamping dragX we can keep it within
+            //  whatever bounds we need
+            dragY = Phaser.Math.Clamp(dragY, 300, 900);
+
+            //  By only applying the dragX we can limit the drag
+            //  to be horizontal only
+            gameObject.y = dragY;
+        });
+
 
         let musicOn = this.add.image(1000,550,'musicOn');
         musicOn.setVisible(false);
@@ -204,9 +229,10 @@ class Load extends Phaser.Scene{
        settingsBlack.setDepth(100);
        settingsBlack.setInteractive();
        settingsBlack.on('pointerdown', () => {
-            alert('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
             this.settingsBox.setVisible(true);
             backSettingsBlack.setVisible(true);
+            this.volBar.setVisible(true);
+            this.slider.setVisible(true);
             if(audioImageOn == true){
                 musicOn.setVisible(true);
                 MusicOnTxt.setVisible(true);
@@ -251,6 +277,8 @@ class Load extends Phaser.Scene{
 
        settingsWhite.setInteractive()
        settingsWhite.on('pointerdown', () => {
+            this.volBar.setVisible(true);
+            this.slider.setVisible(true);
             this.settingsBox.setVisible(true);
             backSettingsBlack.setVisible(true);
             if(audioImageOn == true){
@@ -267,6 +295,8 @@ class Load extends Phaser.Scene{
        backSettingsBlack.on('pointerdown', () => {
             this.settingsBox.setVisible(false);
             backSettingsBlack.setVisible(false);
+            this.volBar.setVisible(false);
+            this.slider.setVisible(false);
             musicOn.setVisible(false);
             musicOff.setVisible(false);
             MusicOnTxt.setVisible(false);
@@ -275,7 +305,7 @@ class Load extends Phaser.Scene{
 
        musicOn.setInteractive()
        musicOn.on('pointerdown', () => {
-            this.BGMusic.pause();
+            musicTest.pause();
             musicOn.setVisible(false);
             MusicOnTxt.setVisible(false);
             MusicOffTxt.setVisible(true);
@@ -296,7 +326,7 @@ class Load extends Phaser.Scene{
 
        musicOff.setInteractive()
        musicOff.on('pointerdown', () => {
-        this.BGMusic.resume();
+        musicTest.resume();
         musicOn.setVisible(true);
         MusicOnTxt.setVisible(true);
         MusicOffTxt.setVisible(false);
@@ -317,71 +347,14 @@ class Load extends Phaser.Scene{
 
 
 
-      /*  this.tweens.chain({
-            tweens: [
-                {
-                   targets: playButton,
-                   x: 600,
-                   duration: 300,
-                   ease:'Sine.out' 
-                },
-                {
-                    targets: settingsButton,
-                    x: 600,
-                    duration: 300,
-                    ease:'Sine.out' 
-                 },
-                 {
-                    targets: creditsButton,
-                    x: 600,
-                    duration: 300,
-                    ease:'Sine.out' 
-                 },
-                 {
-                    targets: exitButton,
-                    x: 600,
-                    duration: 300,
-                    ease:'Sine.out' 
-                 },
-                {
-                    targets: play,
-                    x: 295,
-                    duration: 1000,
-                    ease:'cubic.out',
-                },
-                {
-                targets: settings,
-                x: 240,
-                duration: 1000,
-                ease:'cubic.out',
-                },
-                  {
-                targets: credits,
-                x: 245,
-                duration: 1000,
-                ease:'cubic.out',
-                },
-                {
-                targets: exit,
-                x: 295,
-                duration: 1000,
-                ease:'cubic.out',
-                },
-            ]
-        });
-
-        
-        play.setInteractive()
-
-        play.on('pointerdown', () => {
-            this.gotoScene('play');
-        })
-
-
-
-        this.input.on('pointerdown', () => this.scene.start('intro'));*/
     }
 
+
+    update()
+    {
+        musicVolume.masterVol = (900-this.slider.y)/600;
+        musicVolume.BGMusic.volume = musicVolume.masterVol;
+    }
     
 
 }
@@ -403,7 +376,9 @@ class Exit extends Phaser.Scene{
 */
 
 
-
+const musicVolume = {
+    masterVol:.5
+}
 const game = new Phaser.Game({
     scale: {
         mode: Phaser.Scale.FIT,
